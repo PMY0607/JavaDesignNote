@@ -88,9 +88,10 @@ public class RegistFrame extends JFrame {
 				String username = usernameTf.getText();
 				String password = new String(passwordTf1.getPassword());
 				String password2 = new String(passwordTf2.getPassword());
-				String regex1 = "\\D\\w{2,}";
-				String regex2 = "\\w{2,}";
-				
+//				String regex1 = "\\D\\w{2,}";
+//				String regex2 = "\\w{2,}";
+				String regex1 = "\\D[A-Za-z0-9_+]{2,}";
+				String regex2 = "[A-Za-z0-9_+]{4,}";
 				if(username.length()==0||password.length()==0||password2.length()==0) {				//判断是否有输入
 					JOptionPane.showMessageDialog(null, "请输入用户名密码","注册失败",JOptionPane.WARNING_MESSAGE);
 				}else if(password.equals(password2)) {					//判断两次密码是否确认

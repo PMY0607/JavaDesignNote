@@ -86,9 +86,10 @@ public class LogFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String username = usernameTf.getText();
 				String password = new String(passwordTf.getPassword());
-				String regex1 = "\\D\\w{2,}";
-				String regex2 = "\\w{2,}";
-				
+//				String regex1 = "\\D\\w{2,}";
+//				String regex2 = "\\w{2,}";
+				String regex1 = "\\D[A-Za-z0-9_+]{2,}";
+				String regex2 = "[A-Za-z0-9_+]{4,}";
 				if (username.length() == 0 || password.length() == 0) {					//是否有填入
 					JOptionPane.showMessageDialog(null, "请输入用户名密码", "登录失败", JOptionPane.PLAIN_MESSAGE);
 				} else if (username.matches(regex1) && password.matches(regex2)) {			//用户名密码格式正确
