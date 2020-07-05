@@ -5,7 +5,7 @@ import java.util.List;
 import Note.Info.History;
 import Note.Info.User;
 /**
- * 基本操作接口
+ * 针对数据库的基本操作接口
  * @author PMY
  *
  */

@@ -3,7 +3,11 @@ package Note.Service.Impl;
 import javax.swing.JTextArea;
 
 import Note.Service.FindRepl;
-
+/**
+ * 查找/替换实现类
+ * @author PMY
+ *
+ */
 public class ReplImpl implements FindRepl{
 	private static String lasts = null;
 	private static int index;

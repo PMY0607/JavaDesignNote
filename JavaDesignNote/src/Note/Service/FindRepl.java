@@ -1,7 +1,11 @@
 package Note.Service;
 
 import javax.swing.JTextArea;
-
+/**
+ * 查找/替换接口
+ * @author PMY
+ *
+ */
 public interface FindRepl {
 	/**
 	 * 从text文本域中查找字串str<br>

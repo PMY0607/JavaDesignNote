@@ -5,7 +5,11 @@ import java.sql.Connection;
 import Note.Dao.Impl.OpDaoImpl;
 import Note.Info.User;
 import Note.Service.UserDao;
-
+/**
+ * µÇÂ¼×¢²áÊµÏÖÀà
+ * @author PMY
+ *
+ */
 public class UserDaoImpl implements UserDao{
 	private OpDaoImpl op = null;
 	

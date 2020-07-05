@@ -1,7 +1,11 @@
 package Note.Service;
 
 import Note.Info.User;
-
+/**
+ * 用户登录/注册接口
+ * @author PMY
+ *
+ */
 public interface UserDao {
 	/**
 	 * 用户登录接口<br>

@@ -6,7 +6,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JOptionPane;
-
+/**
+ * 数据库连接类
+ * @author PMY
+ *
+ */
 public class DB {
 	private static final String DBDIRVER = "com.mysql.cj.jdbc.Driver";
 	private static final String DBURL = "jdbc:mysql://localhost:3306/note?useUnicode=true"

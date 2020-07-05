@@ -1,9 +1,9 @@
+Note.Dao
+Note.Dao.Impl
 Note.Factory
 Note.Frame
+Note.Info
 Note.Service
-Note.ServiceImpl
+Note.Service.Impl
 Note.dbc
-Note.vo.Dao
-Note.vo.DaoImpl
-Note.vo.Info
 Test

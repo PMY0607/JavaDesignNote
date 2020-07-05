@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -30,13 +31,18 @@ import org.omg.CORBA.DATA_CONVERSION;
 import Note.Dao.Impl.OpDaoImpl;
 import Note.Info.History;
 import Note.Info.User;
+import Note.Service.Impl.HistoryOrderImpl;
 import Note.dbc.DB;
 
 import javax.swing.ListSelectionModel;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 /**
  * 历史文件界面
+ * 
  * @author PMY
  *
  */
@@ -53,6 +59,7 @@ public class HistoryFrame extends JFrame {
 	private JButton delBt;
 	private ArrayList<History> list;
 	private OpDaoImpl odi = new OpDaoImpl(DB.getConnection());
+	private HistoryOrderImpl hoi = new HistoryOrderImpl();
 	/**
 	 * Launch the application.
 	 */
@@ -71,11 +78,12 @@ public class HistoryFrame extends JFrame {
 
 	/**
 	 * 新建一个历史纪录窗口
-	 * @param frame	原窗口对象
-	 * @param user	正在使用的用户
-	 * @param text	操作文本域
+	 * 
+	 * @param frame 原窗口对象
+	 * @param user  正在使用的用户
+	 * @param text  操作文本域
 	 */
-	public HistoryFrame(JFrame frame,User user,JTextArea text) {
+	public HistoryFrame(JFrame frame, User user, JTextArea text) {
 
 		init();
 		setBounds(100, 100, 771, 443);
@@ -88,6 +96,7 @@ public class HistoryFrame extends JFrame {
 		setContentPane(contentPane);
 
 		scrollPane = new JScrollPane();
+
 		scrollPane.setBounds(0, 0, 765, 254);
 		contentPane.add(scrollPane);
 
@@ -96,7 +105,7 @@ public class HistoryFrame extends JFrame {
 		opBt = new JButton("\u6253\u5F00\u9009\u4E2D\u6587\u4EF6");
 		opBt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				int row = table.getSelectedRow();
 				OpDaoImpl odi = new OpDaoImpl(DB.getConnection());
 				if (row != -1) {
@@ -112,7 +121,7 @@ public class HistoryFrame extends JFrame {
 							JOptionPane.showMessageDialog(null, "打开成功");
 							try {
 								odi.setUserFile(user.getUsername(), path);
-								frame.setTitle(user.getUsername()+"正在编辑："+f.getName());
+								frame.setTitle(user.getUsername() + "正在编辑：" + f.getName());
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -127,7 +136,7 @@ public class HistoryFrame extends JFrame {
 								if (odi.delHistory(path)) {
 									DefaultTableModel mode = (DefaultTableModel) table.getModel();
 									mode.removeRow(row);
-								
+
 									JOptionPane.showMessageDialog(null, "删除成功!");
 								} else {
 									JOptionPane.showMessageDialog(null, "删除失败");
@@ -142,7 +151,7 @@ public class HistoryFrame extends JFrame {
 
 		});
 
-		opBt.setBounds(207, 284, 123, 64);
+		opBt.setBounds(181, 284, 123, 64);
 		contentPane.add(opBt);
 
 		delBt = new JButton("\u5220\u9664\u9009\u4E2D\u7EAA\u5F55");
@@ -150,16 +159,16 @@ public class HistoryFrame extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				int row = table.getSelectedRow();
+				//System.out.println(row);
 				if (row != -1) {
 					String path = (String) table.getValueAt(row, 0);
 					try {
 						if (odi.delHistory(path)) {
 							DefaultTableModel mode = (DefaultTableModel) table.getModel();
 							mode.removeRow(row);
-							System.out.println(1);
 							JOptionPane.showMessageDialog(null, "删除成功!");
 						} else {
-							System.out.println(2);
+
 							DefaultTableModel mode = (DefaultTableModel) table.getModel();
 							mode.removeRow(row);
 							JOptionPane.showMessageDialog(null, "删除成功");
@@ -173,8 +182,41 @@ public class HistoryFrame extends JFrame {
 			}
 
 		});
-		delBt.setBounds(452, 284, 133, 64);
+		delBt.setBounds(392, 284, 133, 64);
 		contentPane.add(delBt);
+
+		//排序
+		JButton button = new JButton("\u6392\u5E8F");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int col = table.getSelectedColumn();
+				System.out.println(col);
+				if (col == -1)  col =2;
+					DefaultTableModel mode = (DefaultTableModel) table.getModel();
+					//mode.getDataVector();
+					Vector<History> list = null;
+					try {
+						list = new Vector<History>(odi.getHistoryList());
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					list = hoi.orderBy(list, col);
+					
+					Object data[][] = new Object[list.size()][3];
+					for (int i = 0; i < list.size(); i++) {
+						History his = list.get(i);
+						// File f = new File(his.getLastFileName());
+						String date = new SimpleDateFormat("yyyy-MM-dd ").format(his.getLastDate());
+						data[i] = new Object[] { his.getLastFileName(), his.getUserName(), date }; // 写入到表格
+					}
+					// 表头
+					table.setModel(new DefaultTableModel(data, new String[] { "文件名", "最后一次操作者", "最后操作时间" }));
+
+			}
+		});
+		button.setBounds(585, 333, 113, 27);
+		contentPane.add(button);
 	}
 
 	private void init() {

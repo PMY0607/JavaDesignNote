@@ -12,7 +12,11 @@ import Note.Dao.OpDao;
 import Note.Frame.NoteFrame;
 import Note.Info.History;
 import Note.Info.User;
-
+/**
+ * 数据库基本操作实现类
+ * @author PMY
+ *
+ */
 public class OpDaoImpl implements OpDao {
 	private Connection con = null;
 
@@ -197,27 +201,15 @@ public class OpDaoImpl implements OpDao {
 		pst.setString(1, fileName);
 		System.out.println(fileName);
 		ResultSet rs = pst.executeQuery();
-		if(rs.next()) {
-			System.out.println(3);
+		if(rs.next()) {							//历史纪录存在此文件
 			String delsql = "delete from history where lastFileName = ?;";
 			pst = con.prepareStatement(delsql);
 			pst.setString(1, fileName);
 			int result =pst.executeUpdate();
 			String username = rs.getString(1);
 			pst.close();
-			if(result>0){
-				String sql1 = "update user set lastfileName = NULL  where username = ?;";
-				pst = con.prepareStatement(sql1);
-				pst.setString(1, username);
-				pst.executeUpdate();
-				return true;
-			}
-			else {
-				System.out.println(4);
-				return false;
-			}
+			return true;
 		}else {
-			System.out.println(5);
 			return false;
 		}
 		

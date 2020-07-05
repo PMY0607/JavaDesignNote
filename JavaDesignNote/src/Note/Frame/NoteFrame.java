@@ -49,6 +49,8 @@ import Note.Dao.Impl.OpDaoImpl;
 import Note.Info.User;
 import Note.Service.Impl.ReplImpl;
 import Note.dbc.DB;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * 主界面
@@ -65,7 +67,7 @@ public class NoteFrame extends JFrame {
 	private JTextArea text;
 	private JMenuBar Mb; // 菜单栏
 	private JMenu m1, m2, m3, m33, m4; // 菜单项
-	private JMenuItem m11, m12, m13, m14, m15, m16, m21, m23, m24, m25, m26, m27, m32, m331, m332, m333, m334, m335,
+	private JMenuItem m11, m12, m13, m14, m15, m16, m21, m22,m23, m24, m25, m26, m27, m32, m331, m332, m333, m334, m335,
 			m35, m34, m41; // 菜单选项
 	private JCheckBoxMenuItem m31; // 自动换行
 	private MenuItem m51, m52, m53, m54, m55, m56, m57; // 右键菜单选项
@@ -75,7 +77,6 @@ public class NoteFrame extends JFrame {
 	private int result = 0;
 	public static File file;
 	private OpDaoImpl odi = new OpDaoImpl(DB.getConnection());
-	private JMenuItem m22;
 	private String cs = "UTF-8";
 
 //	/**
@@ -100,6 +101,71 @@ public class NoteFrame extends JFrame {
 	 * @param use 当前操作用户对象
 	 */
 	public NoteFrame(User use) {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int saveResult = JOptionPane.showConfirmDialog(null, "是否保存当前文件？");
+				if (saveResult == 0) { // 保存当前文件
+					if (file == null) { // 当前操作文件为空
+						chooser = new JFileChooser("C:\\Users\\PMY\\Desktop"); // 打开文件选择存入
+						chooser.setFileFilter(new filter());
+						result = chooser.showSaveDialog(null);
+
+						if (result == JFileChooser.APPROVE_OPTION) {
+							File selectFile = chooser.getSelectedFile();
+							String end = chooser.getFileFilter().getDescription();
+							File newFile = null;
+							if (selectFile.getAbsolutePath().toLowerCase().endsWith(end.toLowerCase())) {
+								// 如果文件是以选定扩展名结束的，则直接保存到选定文件内
+								newFile = selectFile;
+							} else {
+								// 加上扩展名
+								newFile = new File(selectFile.getAbsoluteFile() + end);
+							}
+							try {
+								if (newFile.exists() == false) {
+									newFile.createNewFile();
+								}
+								// 开始写入文件
+								//BufferedWriter br = new BufferedWriter(new FileWriter(newFile));
+								OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(newFile));
+								char chs[] = text.getText().toCharArray();
+								br.write(chs);
+								br.flush();
+								br.close();
+								setTitle(user.getUsername() + " 正在编辑:" + newFile.getName());
+								file = newFile;
+								if (user != null)
+									odi.setUserFile(user.getUsername(), file.getAbsolutePath());
+							} catch (Exception ee) {
+								JOptionPane.showMessageDialog(null, ee.toString());
+							}
+						}
+
+					} else { // 已存在编辑的文档直接保存即可
+						char chs[] = text.getText().toCharArray();
+						try {
+							//BufferedWriter br = new BufferedWriter(new FileWriter(file));
+							OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(file));
+							br.write(chs);
+							br.flush();
+							br.close();
+							if (user != null)
+								odi.setUserFile(user.getUsername(), file.getAbsolutePath());
+						} catch (Exception ie) {
+							JOptionPane.showMessageDialog(null, ie.toString());
+						}
+					}
+					JOptionPane.showMessageDialog(null, "保存成功!\n感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用", JOptionPane.PLAIN_MESSAGE);
+					DB.closeConnection();	
+					System.exit(0);
+				} else if (saveResult == 1) {
+					JOptionPane.showMessageDialog(null, "感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用", JOptionPane.PLAIN_MESSAGE);
+					System.exit(0);
+					DB.closeConnection();	
+				}		
+			}
+		});
 		this.user = use;
 		if (user != null)
 			setTitle(user.getUsername());
@@ -660,7 +726,7 @@ public class NoteFrame extends JFrame {
 			JOptionPane.showMessageDialog(null, e.toString());
 		}
 		// 默认关闭操作
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 		// 窗口位置调整为屏幕中心
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

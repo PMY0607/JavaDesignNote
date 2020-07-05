@@ -48,6 +48,10 @@ public class History {
 	public void setLastDate(Date lastDate) {
 		this.lastDate = lastDate;
 	}
+	@Override
+	public String toString() {
+		return "userName=" + userName + ", lastFileName=" + lastFileName + ", lastDate=" + lastDate ;
+	}
 	
 	
 	
