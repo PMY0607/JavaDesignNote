@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import Note.Service.Impl.UserDaoImpl;
 /**
- * 服务层工程类
+ * 服务层工程类工厂
  * @author PMY
  *
  */

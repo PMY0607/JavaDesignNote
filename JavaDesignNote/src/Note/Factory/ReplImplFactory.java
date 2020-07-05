@@ -2,7 +2,7 @@ package Note.Factory;
 
 import Note.Service.Impl.ReplImpl;
 /**
- * 获得查找替换类
+ * 查找替换类工厂
  * @author PMY
  *
  */
