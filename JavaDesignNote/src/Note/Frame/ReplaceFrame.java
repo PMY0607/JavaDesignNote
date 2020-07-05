@@ -138,7 +138,7 @@ public class ReplaceFrame extends JFrame {
 
 		});
 		ReBt.setFont(new Font("华文新魏", Font.BOLD, 23));
-		ReBt.setBounds(147, 182, 102, 47);
+		ReBt.setBounds(167, 182, 102, 47);
 		contentPane.add(ReBt);
 
 		//全部替换
@@ -160,7 +160,7 @@ public class ReplaceFrame extends JFrame {
 			}
 		});
 		ReAllBt.setFont(new Font("华文新魏", Font.BOLD, 18));
-		ReAllBt.setBounds(273, 184, 123, 47);
+		ReAllBt.setBounds(307, 182, 123, 47);
 		contentPane.add(ReAllBt);
 	}
 

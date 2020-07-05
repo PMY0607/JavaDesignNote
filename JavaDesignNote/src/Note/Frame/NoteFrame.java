@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.awt.JobAttributes;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.Toolkit;
@@ -47,6 +48,7 @@ import javax.swing.undo.UndoManager;
 
 import Note.Dao.Impl.OpDaoImpl;
 import Note.Info.User;
+import Note.Service.Impl.FileOpImpl;
 import Note.Service.Impl.ReplImpl;
 import Note.dbc.DB;
 import java.awt.event.WindowAdapter;
@@ -67,8 +69,8 @@ public class NoteFrame extends JFrame {
 	private JTextArea text;
 	private JMenuBar Mb; // 菜单栏
 	private JMenu m1, m2, m3, m33, m4; // 菜单项
-	private JMenuItem m11, m12, m13, m14, m15, m16, m21, m22,m23, m24, m25, m26, m27, m32, m331, m332, m333, m334, m335,
-			m35, m34, m41; // 菜单选项
+	private JMenuItem m11, m12, m13, m14, m15, m16, m21, m22, m23, m24, m25, m26, m27, m32, m331, m332, m333, m334,
+			m335, m35, m34, m41; // 菜单选项
 	private JCheckBoxMenuItem m31; // 自动换行
 	private MenuItem m51, m52, m53, m54, m55, m56, m57; // 右键菜单选项
 	private PopupMenu pMenu; // 右键菜单
@@ -78,6 +80,7 @@ public class NoteFrame extends JFrame {
 	public static File file;
 	private OpDaoImpl odi = new OpDaoImpl(DB.getConnection());
 	private String cs = "UTF-8";
+	private FileOpImpl foi = new FileOpImpl();
 
 //	/**
 //	 * Launch the application.
@@ -106,64 +109,27 @@ public class NoteFrame extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				int saveResult = JOptionPane.showConfirmDialog(null, "是否保存当前文件？");
 				if (saveResult == 0) { // 保存当前文件
-					if (file == null) { // 当前操作文件为空
-						chooser = new JFileChooser("C:\\Users\\PMY\\Desktop"); // 打开文件选择存入
-						chooser.setFileFilter(new filter());
-						result = chooser.showSaveDialog(null);
-
-						if (result == JFileChooser.APPROVE_OPTION) {
-							File selectFile = chooser.getSelectedFile();
-							String end = chooser.getFileFilter().getDescription();
-							File newFile = null;
-							if (selectFile.getAbsolutePath().toLowerCase().endsWith(end.toLowerCase())) {
-								// 如果文件是以选定扩展名结束的，则直接保存到选定文件内
-								newFile = selectFile;
-							} else {
-								// 加上扩展名
-								newFile = new File(selectFile.getAbsoluteFile() + end);
-							}
-							try {
-								if (newFile.exists() == false) {
-									newFile.createNewFile();
-								}
-								// 开始写入文件
-								//BufferedWriter br = new BufferedWriter(new FileWriter(newFile));
-								OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(newFile));
-								char chs[] = text.getText().toCharArray();
-								br.write(chs);
-								br.flush();
-								br.close();
-								setTitle(user.getUsername() + " 正在编辑:" + newFile.getName());
-								file = newFile;
-								if (user != null)
-									odi.setUserFile(user.getUsername(), file.getAbsolutePath());
-							} catch (Exception ee) {
-								JOptionPane.showMessageDialog(null, ee.toString());
-							}
+					String Path;
+					try {
+						Path = foi.SaveFile(text, file);
+						if (Path != null) {
+							user.setLastFileName(Path);
+							file = new File(Path);
+							odi.setUserFile(user.getUsername(), Path);
+							// System.out.println(user.getLastFileName());
 						}
-
-					} else { // 已存在编辑的文档直接保存即可
-						char chs[] = text.getText().toCharArray();
-						try {
-							//BufferedWriter br = new BufferedWriter(new FileWriter(file));
-							OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(file));
-							br.write(chs);
-							br.flush();
-							br.close();
-							if (user != null)
-								odi.setUserFile(user.getUsername(), file.getAbsolutePath());
-						} catch (Exception ie) {
-							JOptionPane.showMessageDialog(null, ie.toString());
-						}
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, e1.toString());
 					}
-					JOptionPane.showMessageDialog(null, "保存成功!\n感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用", JOptionPane.PLAIN_MESSAGE);
-					DB.closeConnection();	
+					JOptionPane.showMessageDialog(null, "保存成功!\n感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用",
+							JOptionPane.PLAIN_MESSAGE);
+					DB.closeConnection();
 					System.exit(0);
 				} else if (saveResult == 1) {
 					JOptionPane.showMessageDialog(null, "感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用", JOptionPane.PLAIN_MESSAGE);
+					DB.closeConnection();
 					System.exit(0);
-					DB.closeConnection();	
-				}		
+				}
 			}
 		});
 		this.user = use;
@@ -191,30 +157,21 @@ public class NoteFrame extends JFrame {
 		m11 = new JMenuItem("\u6253\u5F00");
 		m11.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				foi = new FileOpImpl();
 				try {
-					// 设置打开时的默认目录，两种方式
-					chooser = new JFileChooser("C:\\Users\\PMY\\Desktop");
-					chooser.setFileFilter(new filter());
-					result = chooser.showOpenDialog(null); // 弹出打开窗口获得按钮结果
-					if (result == JFileChooser.APPROVE_OPTION) {// 打开按钮
-						file = chooser.getSelectedFile();
-						int length = (int) file.length();
-						//BufferedReader reader = new BufferedReader(new FileReader(file));
-						InputStreamReader reader = new InputStreamReader(new FileInputStream(file));
-						char[] ch = new char[length];
-						reader.read(ch);
-						reader.close();
-						text.setText(new String(ch).trim());
+					String Path = foi.OpenFileToArea(text);
+					System.out.println(Path);
+					if (Path != null) {
+						file = new File(Path);
+						user.setLastFileName(Path);
+						odi.setUserFile(user.getUsername(), Path);
 						setTitle(user.getUsername() + " 正在编辑:" + file.getName());
-
-					} else if (result == JFileChooser.CANCEL_OPTION) {
-						// 点击了取消按钮
 					}
-				} catch (Exception e2) {
-					JOptionPane.showMessageDialog(null, e2);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, e1.toString());
 				}
 			}
-
 		});
 
 		// 新建
@@ -222,6 +179,7 @@ public class NoteFrame extends JFrame {
 		m12.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				text.setText("");
+				JOptionPane.showMessageDialog(null, "新建成功!");
 				setTitle(user.getUsername() + " 正在编辑：新建文本文档");
 				file = null;
 			}
@@ -231,57 +189,20 @@ public class NoteFrame extends JFrame {
 		m13 = new JMenuItem("\u4FDD\u5B58");
 		m13.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (file == null) { // 当前操作文件为空
-					chooser = new JFileChooser("C:\\Users\\PMY\\Desktop"); // 打开文件选择存入
-					chooser.setFileFilter(new filter());
-					result = chooser.showSaveDialog(null);
-
-					if (result == JFileChooser.APPROVE_OPTION) {
-						File selectFile = chooser.getSelectedFile();
-						String end = chooser.getFileFilter().getDescription();
-						File newFile = null;
-						if (selectFile.getAbsolutePath().toLowerCase().endsWith(end.toLowerCase())) {
-							// 如果文件是以选定扩展名结束的，则直接保存到选定文件内
-							newFile = selectFile;
-						} else {
-							// 加上扩展名
-							newFile = new File(selectFile.getAbsoluteFile() + end);
-						}
-						try {
-							if (newFile.exists() == false) {
-								newFile.createNewFile();
-							}
-							// 开始写入文件
-							//BufferedWriter br = new BufferedWriter(new FileWriter(newFile));
-							OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(newFile));
-							char chs[] = text.getText().toCharArray();
-							br.write(chs);
-							br.flush();
-							br.close();
-							setTitle(user.getUsername() + " 正在编辑:" + newFile.getName());
-							file = newFile;
-							if (user != null)
-								odi.setUserFile(user.getUsername(), file.getAbsolutePath());
-						} catch (Exception ee) {
-							JOptionPane.showMessageDialog(null, ee.toString());
-						}
+				try {
+					String Path = foi.SaveFile(text, file);
+					System.out.println(Path);
+					if (Path != null) {
+						user.setLastFileName(Path);
+						file = new File(Path);
+						odi.setUserFile(user.getUsername(), Path);
+						setTitle(user.getUsername() + " 正在编辑:" + file.getName());
+						JOptionPane.showConfirmDialog(null, "保存成功!");
 					}
-
-				} else { // 已存在编辑的文档直接保存即可
-					char chs[] = text.getText().toCharArray();
-					try {
-						//BufferedWriter br = new BufferedWriter(new FileWriter(file));
-						OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(file));
-						br.write(chs);
-						br.flush();
-						br.close();
-						if (user != null)
-							odi.setUserFile(user.getUsername(), file.getAbsolutePath());
-					} catch (Exception ie) {
-						JOptionPane.showMessageDialog(null, ie.toString());
-					}
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, e1.toString());
 				}
-
 			}
 		});
 
@@ -290,45 +211,20 @@ public class NoteFrame extends JFrame {
 		m14.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					chooser = new JFileChooser("C:\\Users\\xiaozhx\\Desktop");
-					chooser.setFileFilter(new filter());
-					result = chooser.showSaveDialog(null);
-					if (result == JFileChooser.APPROVE_OPTION) {
-						File selectfile = chooser.getSelectedFile(); // 获得文件名
-						// 被筛选出来的文件后缀名
-						String end = chooser.getFileFilter().getDescription();
-						File newFile = null;
-						if (selectfile.getAbsolutePath().toUpperCase().endsWith(end.toUpperCase())) {
-							// 如果文件后缀一致，则使用原来的名字
-							newFile = selectfile;
-						} else {
-							// 否则加上选定的后缀
-							newFile = new File(selectfile.getAbsolutePath() + end);
+					String Path = foi.SaveOtherFile(text, file);
+					if (Path != null) {
+						if (Path != null) {
+							user.setLastFileName(Path);
+							file = new File(Path);
+							odi.setUserFile(user.getUsername(), Path);
+							setTitle(user.getUsername() + " 正在编辑:" + file.getName());
+							JOptionPane.showMessageDialog(null, "另存为成功!");
 						}
-						try { // 判断是否存在
-							if (newFile.exists() == false) {
-								newFile.createNewFile();
-							} // 开始写入文件
-							//FileWriter writer = new FileWriter(newFile);
-							OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(newFile));
-							char[] arry = text.getText().toCharArray();
-							writer.write(arry);
-							writer.flush();
-							writer.close();
-							setTitle(user.getUsername() + " 正在编辑:" + newFile.getName());
-							file = newFile;
-							if (user != null)
-								odi.setUserFile(user.getUsername(), file.getAbsolutePath());
-						} catch (IOException e1) {
-						}
-					} else if (result == JFileChooser.CANCEL_OPTION) {
-						// 点击了取消按钮asfasfasf
 					}
-				} catch (Exception e2) {
-					JOptionPane.showMessageDialog(null, e2);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, e1.toString());
 				}
 			}
-
 		});
 
 		// 退出
@@ -337,71 +233,34 @@ public class NoteFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int saveResult = JOptionPane.showConfirmDialog(null, "是否保存当前文件？");
 				if (saveResult == 0) { // 保存当前文件
-					if (file == null) { // 当前操作文件为空
-						chooser = new JFileChooser("C:\\Users\\PMY\\Desktop"); // 打开文件选择存入
-						chooser.setFileFilter(new filter());
-						result = chooser.showSaveDialog(null);
-
-						if (result == JFileChooser.APPROVE_OPTION) {
-							File selectFile = chooser.getSelectedFile();
-							String end = chooser.getFileFilter().getDescription();
-							File newFile = null;
-							if (selectFile.getAbsolutePath().toLowerCase().endsWith(end.toLowerCase())) {
-								// 如果文件是以选定扩展名结束的，则直接保存到选定文件内
-								newFile = selectFile;
-							} else {
-								// 加上扩展名
-								newFile = new File(selectFile.getAbsoluteFile() + end);
-							}
-							try {
-								if (newFile.exists() == false) {
-									newFile.createNewFile();
-								}
-								// 开始写入文件
-								//BufferedWriter br = new BufferedWriter(new FileWriter(newFile));
-								OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(newFile));
-								char chs[] = text.getText().toCharArray();
-								br.write(chs);
-								br.flush();
-								br.close();
-								setTitle(user.getUsername() + " 正在编辑:" + newFile.getName());
-								file = newFile;
-								if (user != null)
-									odi.setUserFile(user.getUsername(), file.getAbsolutePath());
-							} catch (Exception ee) {
-								JOptionPane.showMessageDialog(null, ee.toString());
-							}
-
+					String Path;
+					try {
+						Path = foi.SaveFile(text, file);
+						if (Path != null) {
+							user.setLastFileName(Path);
+							file = new File(Path);
+							odi.setUserFile(user.getUsername(), Path);
+							// System.out.println(user.getLastFileName());
 						}
-
-					} else { // 已存在编辑的文档直接保存即可
-						char chs[] = text.getText().toCharArray();
-						try {
-							//BufferedWriter br = new BufferedWriter(new FileWriter(file));
-							OutputStreamWriter br = new OutputStreamWriter(new FileOutputStream(file));
-							br.write(chs);
-							br.flush();
-							br.close();
-							if (user != null)
-								odi.setUserFile(user.getUsername(), file.getAbsolutePath());
-						} catch (Exception ie) {
-							JOptionPane.showMessageDialog(null, ie.toString());
-						}
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, e1.toString());
 					}
-					JOptionPane.showMessageDialog(null, "感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用", JOptionPane.PLAIN_MESSAGE);
-					dispose();
+					JOptionPane.showMessageDialog(null, "保存成功!\n感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用",
+							JOptionPane.PLAIN_MESSAGE);
+					DB.closeConnection();
+					System.exit(0);
 				} else if (saveResult == 1) {
 					JOptionPane.showMessageDialog(null, "感谢使用Java记事本，祝您每天拥有好心情!", "谢谢使用", JOptionPane.PLAIN_MESSAGE);
-					dispose();
+					DB.closeConnection();
+					System.exit(0);
 				}
-				DB.closeConnection();
 			}
-
 		});
 
 		// 编辑菜单
 		m2 = new JMenu("\u7F16\u8F91");
 		m2.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (manager.canUndo()) {
@@ -429,9 +288,8 @@ public class NoteFrame extends JFrame {
 				}
 			}
 		});
-		
-		
-		//撤销
+
+		// 撤销
 		m22 = new JMenuItem("\u6062\u590D");
 		m22.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -533,7 +391,8 @@ public class NoteFrame extends JFrame {
 		m41 = new JMenuItem("\u5173\u4E8E\u8BB0\u4E8B\u672C");
 		m41.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "记事本\n开发语言：JAVA\n开发者：彭明源\n开发时间：2020/6/28", "关于", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, "记事本\n开发语言：JAVA\n开发者：彭明源\n开发时间：2020/6/28", "关于",
+						JOptionPane.PLAIN_MESSAGE);
 			}
 		});
 
@@ -628,7 +487,6 @@ public class NoteFrame extends JFrame {
 		Mb.add(m1);
 		m2.add(m21);
 
-		
 		m2.add(m22);
 		m2.addSeparator();
 		m2.add(m23);
@@ -665,15 +523,15 @@ public class NoteFrame extends JFrame {
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					pMenu.show(text, e.getX(), e.getY());
 					// System.out.println(e.getX()+" "+e.getY());
-					if(manager.canUndo()) {
+					if (manager.canUndo()) {
 						m54.setEnabled(true);
-					}else {
+					} else {
 						m54.setEnabled(false);
 					}
-					
-					if(manager.canRedo()) {
+
+					if (manager.canRedo()) {
 						m57.setEnabled(true);
-					}else {
+					} else {
 						m57.setEnabled(false);
 					}
 				}
@@ -742,7 +600,7 @@ public class NoteFrame extends JFrame {
 				File f = new File(LastFileName);
 				if (f.exists()) {
 					try {
-						//BufferedReader br = new BufferedReader(new FileReader(f));
+						// BufferedReader br = new BufferedReader(new FileReader(f));
 						InputStreamReader br = new InputStreamReader(new FileInputStream(f));
 						char chs[] = new char[(int) f.length()];
 						br.read(chs);

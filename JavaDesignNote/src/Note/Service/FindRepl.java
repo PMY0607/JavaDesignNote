@@ -11,7 +11,7 @@ public interface FindRepl {
 	 * 从text文本域中查找字串str<br>
 	 * @param text	源文本域
 	 * @param str	查找字串
-	 * @return		找到则返回true，没找到则返回-2
+	 * @return		找到则返回字串位置，没找到则返回-2
 	 */
 	public  int find(String text, String str);
 	/**

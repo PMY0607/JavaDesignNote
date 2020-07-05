@@ -24,7 +24,7 @@ public class HistoryOrderImpl implements historyOrder {
 		map.put(0, 0);
 		map.put(1, 0);
 		map.put(2, 0);
-		System.out.println("a");
+		//System.out.println("a");
 	}
 
 

@@ -190,7 +190,7 @@ public class HistoryFrame extends JFrame {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int col = table.getSelectedColumn();
-				System.out.println(col);
+				//System.out.println(col);
 				if (col == -1)  col =2;
 					DefaultTableModel mode = (DefaultTableModel) table.getModel();
 					//mode.getDataVector();

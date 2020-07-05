@@ -199,7 +199,7 @@ public class OpDaoImpl implements OpDao {
 		String sql = "select *from history where BINARY lastFileName =? ;";		//判断是否已经存在该用户的数据
 		PreparedStatement pst =con.prepareStatement(sql);
 		pst.setString(1, fileName);
-		System.out.println(fileName);
+		//System.out.println(fileName);
 		ResultSet rs = pst.executeQuery();
 		if(rs.next()) {							//历史纪录存在此文件
 			String delsql = "delete from history where lastFileName = ?;";
