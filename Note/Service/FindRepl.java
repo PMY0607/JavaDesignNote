@@ -1,4 +1,4 @@
-package Service;
+package Note.Service;
 
 import javax.swing.JTextArea;
 

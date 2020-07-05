@@ -1,4 +1,4 @@
-package dbc;
+package Note.dbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,9 +1,9 @@
-package Dao;
+package Note.Dao;
 
 import java.util.List;
 
-import UserInfo.History;
-import UserInfo.User;
+import Note.Info.History;
+import Note.Info.User;
 /**
  * 基本操作接口
  * @author PMY

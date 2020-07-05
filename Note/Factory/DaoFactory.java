@@ -1,8 +1,8 @@
-package Factory;
+package Note.Factory;
 
 import java.sql.Connection;
 
-import DaoImpl.OpDaoImpl;
+import Note.Dao.Impl.OpDaoImpl;
 /**
  * 数据层工厂类
  * @author PMY

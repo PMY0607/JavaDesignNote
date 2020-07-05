@@ -1,4 +1,4 @@
-package Frame;
+package Note.Frame;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,10 +45,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.undo.UndoManager;
 
-import DaoImpl.OpDaoImpl;
-import ServiceImpl.ReplImpl;
-import UserInfo.User;
-import dbc.DB;
+import Note.Dao.Impl.OpDaoImpl;
+import Note.Info.User;
+import Note.Service.Impl.ReplImpl;
+import Note.dbc.DB;
 
 /**
  * Ö÷½çÃæ

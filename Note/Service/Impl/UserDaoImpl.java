@@ -1,10 +1,10 @@
-package ServiceImpl;
+package Note.Service.Impl;
 
 import java.sql.Connection;
 
-import DaoImpl.OpDaoImpl;
-import Service.UserDao;
-import UserInfo.User;
+import Note.Dao.Impl.OpDaoImpl;
+import Note.Info.User;
+import Note.Service.UserDao;
 
 public class UserDaoImpl implements UserDao{
 	private OpDaoImpl op = null;

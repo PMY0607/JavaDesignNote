@@ -4,19 +4,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import DaoImpl.OpDaoImpl;
-import ServiceImpl.UserDaoImpl;
-import dbc.DB;
-
+import Note.Dao.Impl.OpDaoImpl;
+import Note.Info.User;
+import Note.Service.Impl.UserDaoImpl;
+import Note.dbc.DB;
+/**
+ * 用户数据测试
+ * @author PMY
+ *
+ */
 class UserTest {
 	OpDaoImpl odi = new OpDaoImpl(DB.getConnection());
 
 	@Test
-	void test() {
-
+	void test() throws Exception {
+		long start = System.currentTimeMillis();
 		for (int i = 1; i <= 10000; i++) {
-			String username = "U";
-			String pw = "P";
+			String username = "User";
+			String pw = "PW";
 			if (i < 10) {
 				username = username + "0000";
 			} else if (i < 100) {
@@ -28,8 +33,9 @@ class UserTest {
 			}
 			username = username + i;
 			pw = pw+username.substring(1);
-			System.out.println(username+"--"+pw);
+			odi.doCreateUser(new User(username, pw));
 		}
+		System.out.println("User operator time:"+(System.currentTimeMillis()-start));		
 	}
 
 }

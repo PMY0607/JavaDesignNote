@@ -1,8 +1,8 @@
-package ServiceImpl;
+package Note.Service.Impl;
 
 import javax.swing.JTextArea;
 
-import Service.FindRepl;
+import Note.Service.FindRepl;
 
 public class ReplImpl implements FindRepl{
 	private static String lasts = null;

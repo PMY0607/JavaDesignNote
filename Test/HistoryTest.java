@@ -6,16 +6,20 @@ import java.sql.Date;
 
 import org.junit.jupiter.api.Test;
 
-import DaoImpl.OpDaoImpl;
-import dbc.DB;
-
+import Note.Dao.Impl.OpDaoImpl;
+import Note.dbc.DB;
+/**
+ * ¿˙ ∑ºÕ¬º≤‚ ‘
+ * @author PMY
+ *
+ */
 class HistoryTest {
 	OpDaoImpl odi = new OpDaoImpl(DB.getConnection());
 	@Test
 	void test() throws Exception {
 		long start =	System.currentTimeMillis();
 		for(int i = 1;i<10001;i++) {
-			String username  = "U";
+			String username  = "User";
 			if(i<10) {
 				username = username+"0000";
 			}else if(i<100) {
@@ -29,9 +33,8 @@ class HistoryTest {
 			String path = System.currentTimeMillis()+".txt";
 			Date d = new Date(System.currentTimeMillis());
 			odi.setHistory(username, path, d);
-			odi.delHistory( path);
 		}
-		System.out.println(System.currentTimeMillis()-start);
+		System.out.println("history opeartor time:"+(System.currentTimeMillis()-start));
 	}
 
 }

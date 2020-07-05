@@ -1,4 +1,4 @@
-package UserInfo;
+package Note.Info;
 
 import java.sql.Date;
 

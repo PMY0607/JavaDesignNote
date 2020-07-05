@@ -1,4 +1,4 @@
-package Frame;
+package Note.Frame;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -16,9 +16,9 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import ServiceImpl.UserDaoImpl;
-import UserInfo.User;
-import dbc.DB;
+import Note.Info.User;
+import Note.Service.Impl.UserDaoImpl;
+import Note.dbc.DB;
 
 import javax.swing.JPasswordField;
 

@@ -1,4 +1,4 @@
-package UserInfo;
+package Note.Info;
 /**
  * 用户成员
  * @author PMY

@@ -1,4 +1,4 @@
-package DaoImpl;
+package Note.Dao.Impl;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
-import Dao.OpDao;
-import Frame.NoteFrame;
-import UserInfo.History;
-import UserInfo.User;
+import Note.Dao.OpDao;
+import Note.Frame.NoteFrame;
+import Note.Info.History;
+import Note.Info.User;
 
 public class OpDaoImpl implements OpDao {
 	private Connection con = null;
@@ -155,6 +155,7 @@ public class OpDaoImpl implements OpDao {
 	 * 添加文件操作历史<br>
 	 * @param username 文件操作者
 	 * @param fileName 被操作的文件
+	 * @param d 最后操作日期
 	 * @return	是否添加成功
 	 * @throws Exception	数据库操作异常
 	 */

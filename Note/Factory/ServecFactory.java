@@ -1,8 +1,8 @@
-package Factory;
+package Note.Factory;
 
 import java.sql.Connection;
 
-import ServiceImpl.UserDaoImpl;
+import Note.Service.Impl.UserDaoImpl;
 /**
  * 服务层工程类
  * @author PMY

@@ -1,6 +1,6 @@
-package Service;
+package Note.Service;
 
-import UserInfo.User;
+import Note.Info.User;
 
 public interface UserDao {
 	/**

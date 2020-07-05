@@ -1,4 +1,4 @@
-package Frame;
+package Note.Frame;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -27,10 +27,10 @@ import javax.swing.table.TableModel;
 
 import org.omg.CORBA.DATA_CONVERSION;
 
-import DaoImpl.OpDaoImpl;
-import UserInfo.History;
-import UserInfo.User;
-import dbc.DB;
+import Note.Dao.Impl.OpDaoImpl;
+import Note.Info.History;
+import Note.Info.User;
+import Note.dbc.DB;
 
 import javax.swing.ListSelectionModel;
 import java.awt.Font;

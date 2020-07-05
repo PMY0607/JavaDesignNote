@@ -1,4 +1,4 @@
-package Frame;
+package Note.Frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
-import ServiceImpl.ReplImpl;
+import Note.Service.Impl.ReplImpl;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
