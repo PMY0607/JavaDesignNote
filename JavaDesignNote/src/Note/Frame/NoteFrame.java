@@ -211,7 +211,7 @@ public class NoteFrame extends JFrame {
 		m14.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					String Path = foi.SaveOtherFile(text, file);
+					String Path = foi.SaveOtherFile(text);
 					if (Path != null) {
 						if (Path != null) {
 							user.setLastFileName(Path);

@@ -27,7 +27,7 @@ public interface FileOp {
 	public String SaveFile(JTextArea text, File file) throws Exception;
 	
 	/**
-	 * 将text域内另存为到file文件内
+	 * 将text文本域内另存为其他文件内
 	 * @param text 原文本域
 	 * @return	另存为文件的路径
 	 * @throws Exception	输出流异常
